@@ -216,5 +216,33 @@ module.exports = (function () {
     return this;
   };
 
+  Node.prototype.export = function(fn) {
+    var treeObj = {};
+
+    fn = fn || function() {};
+
+    function _export(node, parentObj) {
+      parentObj = parentObj || {};
+
+      fn.call(null, parentObj, node);
+
+      if (node.children.length) {
+        parentObj.children = [];
+
+        node.children.forEach(function(node) {
+          var obj = {};
+
+          parentObj.children.push(obj);
+
+          _export(node, obj);
+        });
+      }
+    }
+
+    _export(this, treeObj);
+
+    return treeObj;
+  };
+
   return TreeModel;
 })();
